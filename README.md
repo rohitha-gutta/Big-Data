@@ -1,3 +1,3 @@
 # Big-Data
 
-### MapReduce,PySpark & Hadoop
+### MapReduce, PySpark & Hadoop

@@ -1,0 +1,111 @@
+ASSIGNMENT-1: ROHITHA GUTTA
+
+Input Data: (Input to Mapper)
+ foxy fox jumped over fence
+fox a foxy jumped
+fox jumped over of
+a fox jumped
+
+Map Function:
+map(key, value) {
+//key = record number ex:rec1, etc.
+//value = record contents ex: foxy fox jumped over fence, etc.
+token [] = value.split(' ')
+    	for each word in token {
+        		if (len(word)>=3) & (len(word)<=10) {
+            			if len(word)==4 {
+                			emit(word, 1)
+				emit(words_of_4, word)
+			}
+            			else {
+                			emit(word, 1)
+				}
+			}
+		}
+	emit(num_of_records, 1)
+}
+
+
+Mapper Output:
+(foxy, 1)
+(words_of_4, “foxy”)
+(fox, 1)
+(jumped, 1)
+(over, 1)
+(words_of_4, “over”)
+(fence, 1)
+(num_of_records, 1)
+(fox, 1)
+(foxy, 1)
+(words_of_4, “foxy”)
+(jumped, 1)
+(num_of_records, 1)
+(fox, 1)
+(jumped, 1)
+(over, 1)
+(words_of_4, “over”)
+(num_of_records, 1)
+(fox, 1)
+(jumped, 1)
+(num_of_records, 1)
+
+Sort & Shuffle:
+sort() and shuffle() methods gather all values associated with the same key, sorts them alphabetically, makes a list for each unique key and sends each list to a reducer. 
+
+Sort & Shuffle Output:
+(“fence”, [1])
+("fox", [1,1,1,1])
+(“foxy”, [1,1])
+(“jumped”, [1,1,1,1])
+(“num_of_records”, [1,1,1,1])
+(“over”, [1,1])
+ ("words_of_4", [“foxy”, “over”, “foxy”, “over”])
+
+Input to Reducer: (output of sort and shuffle is input to reducer)
+(“fence”, [1])
+("fox", [1,1,1,1])
+(“foxy”, [1,1])
+(“jumped”, [1,1,1,1])
+(“num_of_records”, [1,1,1,1])
+(“over”, [1,1])
+ ("words_of_4", [“foxy”, “over”, “foxy”, “over”])
+
+
+Reduce Function:
+reduce(key, values){
+    count=0
+    if (key =="words_of_4") {
+        	final_list = [] 
+        	for each word in values { 
+               		if word not in final_list { 
+                		final_list.append(word) //add word to the final_list
+	   		}
+        	}
+		total= len(final_list)
+		emit(key, total) //here key= “words_of_4”
+	}
+    	else if (key ==" num_of_records ") {
+         		for each n in values {
+            			count+=1
+     			}
+         	emit(key, count) // here key = “num_of_records”
+        }
+    	else{
+        	for each n in values {
+            	      count+=1
+		}
+        	if (count>=2) {
+            		emit(key, count) 
+		}
+	}
+}
+
+
+Reducer Output:
+(fox, 4)
+(foxy, 2)
+(jumped, 4)
+(over, 2)
+(words_of_4, 2)
+(num_of_records, 4)
+

@@ -1,0 +1,139 @@
+
+Assignment-2: Rohitha Gutta
+
+
+Data in Input File: (assignment_2_input.txt)
+
+red fox jumped over network of verylongfences
+fox jumped but failedandfailed over network
+fox jumped over and over network of boxes
+a fox jumped but failed over parallelism
+a red fox transformed into blue fox
+fox jumped by action over network
+
+
+
+
+PySpark Code:
+
+$SPARK_HOME/bin/pyspark/Users/rohithagutta/Desktop/Rohitha/spark/zbin/env_setup.sh: line 1: $: command not found
+Python 2.7.10 (default, Oct  6 2017, 22:29:07) 
+[GCC 4.2.1 Compatible Apple LLVM 9.0.0 (clang-900.0.31)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+2018-10-11 13:45:24 WARN  NativeCodeLoader:62 - Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+Setting default log level to "WARN".
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+2018-10-11 13:45:25 WARN  Utils:66 - Service 'SparkUI' could not bind on port 4040. Attempting port 4041.
+2018-10-11 13:45:25 WARN  Utils:66 - Service 'SparkUI' could not bind on port 4041. Attempting port 4042.
+2018-10-11 13:45:25 WARN  Utils:66 - Service 'SparkUI' could not bind on port 4042. Attempting port 4043.
+2018-10-11 13:45:25 WARN  Utils:66 - Service 'SparkUI' could not bind on port 4043. Attempting port 4044.
+Welcome to
+      ____              __
+     / __/__  ___ _____/ /__
+    _\ \/ _ \/ _ `/ __/  '_/
+   /__ / .__/\_,_/_/ /_/\_\   version 2.3.2
+      /_/
+
+Using Python version 2.7.10 (default, Oct  6 2017 22:29:07)
+SparkSession available as 'spark'.
+>>> 
+>>> 
+>>> 
+>>> 
+>>> input_path="/Users/rohithagutta/Desktop/Big Data/assignment_2_input.txt"
+>>> input_rdd= spark.sparkContext.textFile(input_path)
+>>> 
+>>> 
+>>> input_rdd.count()
+6
+>>> input_rdd.collect()
+[u'red fox jumped over network of verylongfences', u'fox jumped but failedandfailed over network', u'fox jumped over and over network of boxes', u'a fox jumped but failed over parallelism', u'a red fox transformed into blue fox', u'fox jumped by action over network']
+>>> 
+>>> 
+>>> 
+>>> 
+>>> def generatePairs(rec):     
+...     list=[]
+...     tokens = rec.split()
+...     list.append(("num_of_records",1))
+...     for word in tokens:
+...         if len(word)>=3 and len(word)<=10:
+...             list.append((word,1))
+...             if len(word)==4:
+...                 list.append(("words_of_4",word))
+...     return list
+... 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> pairs_rdd=input_rdd.flatMap(generatePairs)
+>>> pairs_rdd.collect()
+[('num_of_records', 1), (u'red', 1), (u'fox', 1), (u'jumped', 1), (u'over', 1), ('words_of_4', u'over'), (u'network', 1), ('num_of_records', 1), (u'fox', 1), (u'jumped', 1), (u'but', 1), (u'over', 1), ('words_of_4', u'over'), (u'network', 1), ('num_of_records', 1), (u'fox', 1), (u'jumped', 1), (u'over', 1), ('words_of_4', u'over'), (u'and', 1), (u'over', 1), ('words_of_4', u'over'), (u'network', 1), (u'boxes', 1), ('num_of_records', 1), (u'fox', 1), (u'jumped', 1), (u'but', 1), (u'failed', 1), (u'over', 1), ('words_of_4', u'over'), ('num_of_records', 1), (u'red', 1), (u'fox', 1), (u'into', 1), ('words_of_4', u'into'), (u'blue', 1), ('words_of_4', u'blue'), (u'fox', 1), ('num_of_records', 1), (u'fox', 1), (u'jumped', 1), (u'action', 1), (u'over', 1), ('words_of_4', u'over'), (u'network', 1)]
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> grouping_rdd=pairs_rdd.groupByKey()
+>>> grouping_rdd.collect()
+/Users/rohithagutta/Desktop/Rohitha/spark/python/lib/pyspark.zip/pyspark/shuffle.py:59: UserWarning: Please install psutil to have better support with spilling
+/Users/rohithagutta/Desktop/Rohitha/spark/python/lib/pyspark.zip/pyspark/shuffle.py:59: UserWarning: Please install psutil to have better support with spilling
+[(u'and', <pyspark.resultiterable.ResultIterable object at 0x110bc1b90>), (u'blue', <pyspark.resultiterable.ResultIterable object at 0x110bc1ad0>), (u'over', <pyspark.resultiterable.ResultIterable object at 0x110bc1a90>), (u'fox', <pyspark.resultiterable.ResultIterable object at 0x110bc1c90>), (u'but', <pyspark.resultiterable.ResultIterable object at 0x110bc1bd0>), (u'boxes', <pyspark.resultiterable.ResultIterable object at 0x110bc1c10>), (u'action', <pyspark.resultiterable.ResultIterable object at 0x110bc1cd0>), ('words_of_4', <pyspark.resultiterable.ResultIterable object at 0x110bc1d90>), (u'into', <pyspark.resultiterable.ResultIterable object at 0x110bc1b50>), (u'red', <pyspark.resultiterable.ResultIterable object at 0x110bc1c50>), ('num_of_records', <pyspark.resultiterable.ResultIterable object at 0x110bce910>), (u'network', <pyspark.resultiterable.ResultIterable object at 0x110bce250>), (u'failed', <pyspark.resultiterable.ResultIterable object at 0x110bceb10>), (u'jumped', <pyspark.resultiterable.ResultIterable object at 0x110bce150>)]
+>>> 
+>>> 
+>>> 
+>>> 
+>>> grouped_rdd=grouping_rdd.mapValues(lambda value: list(value))
+>>> grouped_rdd.collect()
+[(u'and', [1]), (u'blue', [1]), (u'over', [1, 1, 1, 1, 1, 1]), (u'fox', [1, 1, 1, 1, 1, 1, 1]), (u'but', [1, 1]), (u'boxes', [1]), (u'action', [1]), ('words_of_4', [u'over', u'over', u'over', u'over', u'over', u'into', u'blue', u'over']), (u'into', [1]), (u'red', [1, 1]), ('num_of_records', [1, 1, 1, 1, 1, 1]), (u'network', [1, 1, 1, 1]), (u'failed', [1]), (u'jumped', [1, 1, 1, 1, 1])]
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> def getFrequency(key,value):
+...     if key=="words_of_4":
+...         final_set={}
+...         final_set=set()
+...         for word in value:
+...             final_set.add(word)
+...         return (key, len(final_set))
+...     else:
+...         count=0
+...         for n in value:
+...             count+=1
+...         return (key, count)
+... 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> 
+>>> freq_rdd=grouped_rdd.map(lambda (key,value): getFrequency(key,value))
+>>> 
+>>> freq_rdd.collect()
+[(u'and', 1), (u'blue', 1), (u'over', 6), (u'fox', 7), (u'but', 2), (u'boxes', 1), (u'action', 1), ('words_of_4', 3), (u'into', 1), (u'red', 2), ('num_of_records', 6), (u'network', 4), (u'failed', 1), (u'jumped', 5)]
+>>> 
+>>> 
+>>> 
+>>> 
+>>> def removeInfrequent(key,value):
+...     if key=="words_of_4" or key=="num_of_records":
+...         return (key,value)
+...     else:
+...         if value>=2:
+...             return (key,value)
+... 
+>>> 
+>>> 
+>>> 
+>>> result_rdd=freq_rdd.filter(lambda (key,value): removeInfrequent(key,value))
+>>> 
+>>> 
+>>> result_rdd.collect()
+[(u'over', 6), (u'fox', 7), (u'but', 2), ('words_of_4', 3), (u'red', 2), ('num_of_records', 6), (u'network', 4), (u'jumped', 5)]
+>>> 
+>>> 
+>>> 
+

@@ -1,9 +1,10 @@
 
 Assignment-2: Rohitha Gutta
 
+Word Count PySpark Program:
 
-Data in Input File: (assignment_2_input.txt)
 
+Data in Input File (assignment_2_input.txt):
 red fox jumped over network of verylongfences
 fox jumped but failedandfailed over network
 fox jumped over and over network of boxes
@@ -11,7 +12,12 @@ a fox jumped but failed over parallelism
 a red fox transformed into blue fox
 fox jumped by action over network
 
-
+Expected output as (key, value) pairs:
+Key                Value
+===                =====
+<unique-word>      <frequency>
+<"words_of_4">     <total-number-of-unique-words-with-length-of-4>
+<"num_of_records"> <total-number-of-records-processed>
 
 
 PySpark Code:

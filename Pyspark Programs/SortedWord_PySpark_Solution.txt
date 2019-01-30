@@ -1,0 +1,149 @@
+Assignment – 3: Rohitha Gutta
+
+
+#!/anaconda3/bin/python
+#-----------------------------------------------------
+# This is Assignment - 3: Rohitha_Gutta
+# The goal is to show top-5 words, top-5 anagrams, top-5 bigrams for a given input file
+#------------------------------------------------------
+
+from __future__ import print_function 
+import sys 
+from pyspark.sql import SparkSession 
+
+if __name__ == '__main__':
+
+    if len(sys.argv) != 2:
+        print("Usage: assignment3.py  <input-file>", file=sys.stderr)
+        exit(-1)
+
+    spark = SparkSession\
+            .builder\
+            .appName("Assignment3")\
+            .getOrCreate()
+
+    #  sys.argv[0] is the name of the script.
+    #  sys.argv[1] is the first parameter
+    input_path = sys.argv[1]  
+    
+    # read input and create an RDD<String>
+    records = spark.sparkContext.textFile(input_path) 
+    
+    #method to generate cleaned words from each record by convert all words to lowercase and remove special character at beginning and ending of each word. Also remove words with length less than 4
+    
+    def cleanData(record):
+        word_list=list()
+        #converts each record to lowercase
+        trimed_record=record.strip().lower()
+        specialChar=("-", "_", ",", ".", "?", ";", "/", "%", "!", "#", "^", "@", "&", "'", "(", ")", "[","]", ":", "{", "}")
+        #tokenize record
+        record_tokens=trimed_record.split()
+        
+        for word in record_tokens:
+            #remove special character at beginning
+            if word.startswith(specialChar):
+                word=word[1:len(word)]
+            #remove special character ending of each word
+            if word.endswith(specialChar):
+                word=word[:len(word)-1]
+            #remove words with length less than 4
+            if len(word)>=4:
+                word_list.append(word)
+        
+        return word_list
+    
+    #cleaned words RDD
+    cleaned_records=records.flatMap(cleanData)
+    
+    #TO FIND TOP-5 WORDS
+    
+    # create a pair of (word, 1) for all words
+    pairs_rdd=cleaned_records.map(lambda word: (word, 1))
+    
+    # aggregate the frequencies of each unique word
+    word_frequency=pairs_rdd.reduceByKey(lambda a, b: a + b)
+    
+    # frequencies of words in decending order
+    top_words=word_frequency.map(lambda a: (a[1],a[0])).sortByKey(False).map(lambda a: (a[1],a[0]))
+    
+    #print RDD with top-5 words
+    print("top-5 words : ", top_words.take(5))
+    
+    #TO FIND TOP-5 ANAGRAMS
+    
+    # used cleaned words RDD and sorted each word
+    sorted_words=cleaned_records.map(lambda a: ''.join(sorted(a)))
+    
+    # create a pair of (sorted_word, 1) for all words
+    anagrams_pairs=sorted_words.map(lambda word: (word, 1))
+    
+    # aggregate the frequencies of each unique sorted word
+    anagrams_frequency=anagrams_pairs.reduceByKey(lambda a, b: a + b)
+    
+    # frequencies of sorted word in decending order
+    top_anagrams=anagrams_frequency.map(lambda a: (a[1],a[0])).sortByKey(False).map(lambda a: (a[1],a[0]))
+    
+    #print RDD with top-5 anagrams
+    print("top-5 anagrams : ", top_anagrams.take(5))
+    
+    #TO FIND TOP-5 BIGRAMS
+    
+    #method to generate bigrams words from each record by convert all words to lowercase and remove special character at beginning and ending of each word
+    def cleanData_bigrams(record):
+        bigrams_list=list()
+        #converts each record to lowercase
+        trimed_record=record.strip().lower()
+        specialChar=("-", "_", ",", ".", "?", ";", "/", "%", "!", "#", "^", "@", "&", "'", "(", ")", "[","]", ":", "{", "}")
+        #tokenize record
+        record_tokens=trimed_record.split()
+        
+        for word in record_tokens:
+            #remove special character at beginning
+            if word.startswith(specialChar):
+                word=word[1:len(word)]
+            #remove special character ending of each word
+            if word.endswith(specialChar):
+                word=word[:len(word)-1]
+                
+            bigrams_list.append(word)
+        
+        return [((bigrams_list[i],bigrams_list[i+1]),1) for i in range (0, len(bigrams_list)-1)]
+    
+    #cleaned bigrams RDD
+    bigrams_rdd=records.flatMap(cleanData_bigrams)
+    
+    # aggregate the frequencies of bigrams
+    bigrams_frequency=bigrams_rdd.reduceByKey(lambda a, b: a + b)
+    
+    # frequencies of bigrams in decending order
+    top_bigrams=bigrams_frequency.map(lambda a: (a[1],a[0])).sortByKey(False).map(lambda a: (a[1],a[0]))
+    
+    #print RDD with top-5 bigrams
+    print("top-5 bigrams : ", top_bigrams.take(5))
+  
+    # done!
+    spark.stop()
+
+
+OUTPUT:
+
+top-5 words :  
+[('which', 2673), 
+('that', 2069), 
+('their', 1529), 
+('they', 1511), 
+('with', 1081)]
+
+top-5 anagrams :  
+[('chhiw', 2673), 
+('ahtt', 2069), 
+('ehirt', 1529), 
+('ehty', 1511), 
+('hitw', 1081)]
+
+top-5 bigrams :  
+[(('of', 'the'), 3914), 
+(('in', 'the'), 1539), 
+(('to', 'the'), 1035), 
+(('and', 'the'), 783), 
+(('it', 'is'), 607)]

@@ -1,10 +1,18 @@
 ASSIGNMENT-1: ROHITHA GUTTA
-
-Input Data: (Input to Mapper)
- foxy fox jumped over fence
+===========================
+Input Data:
+foxy fox jumped over fence
 fox a foxy jumped
 fox jumped over of
 a fox jumped
+
+Expected output:
+Key                Value
+===                =====
+<unique-word>      <frequency>
+<"words_of_4">     <total-number-of-unique-words-with-length-of-4>
+<"num_of_records"> <total-number-of-records-processed>
+
 
 Map Function:
 map(key, value) {

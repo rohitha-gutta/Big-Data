@@ -1,0 +1,8 @@
+Finding Triangles in PySpark Using Motif of GraphFrames:
+
+Input:
+Edges = graph_edges.txt
+Vertices = graph_vertices.txt
+
+Output:
+To find unique triangles

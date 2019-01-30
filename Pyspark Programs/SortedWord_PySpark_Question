@@ -1,3 +1,9 @@
+Sorted Word Count Program in PySpark:
+Spark-PySpark to read an input file and create a two column outputs
+
+Input:
+815.txt
+
 
 Expected Output:
 

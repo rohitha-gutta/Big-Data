@@ -1,0 +1,32 @@
+
+Expected Output:
+
+Output-1: top-5 words
+=====================
+   Top-Word-1   <frequency-as-integer-N1>
+   Top-Word-2   <frequency-as-integer-N2>
+   Top-Word-3   <frequency-as-integer-N3>
+   Top-Word-4   <frequency-as-integer-N4>
+   Top-Word-5   <frequency-as-integer-N5>
+
+where N1 > N2 > N3 > N4 > N5
+
+Output-2: top-5 anagrams
+========================
+   Top-Anagram-1    <frequency-as-integer-M1>
+   Top-Anagram-2    <frequency-as-integer-M2>
+   Top-Anagram-3    <frequency-as-integer-M3>
+   Top-Anagram-4    <frequency-as-integer-M4>
+   Top-Anagram-5    <frequency-as-integer-M5>
+
+where M1 > M2 > M3 > M4 > M5
+
+Output-3: top-5 bigrams
+========================
+   Top-Bigram-1    <frequency-as-integer-Z1>
+   Top-Bigram-2    <frequency-as-integer-Z2>
+   Top-Bigram-3    <frequency-as-integer-Z3>
+   Top-Bigram-4    <frequency-as-integer-Z4>
+   Top-Bigram-5    <frequency-as-integer-Z5>
+
+where Z1 > Z2 > Z3 > Z4 > Z5
